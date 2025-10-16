@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KDMP Simpan Pinjam Desa Sidorejo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body{font-family:'Poppins',sans-serif;background:#f5f7fa;margin:0;color:#333;}
+  header{background:#004aad;color:#fff;padding:15px;text-align:center;}
+  nav{display:flex;justify-content:center;gap:20px;margin-top:10px;}
+  nav a{color:#fff;text-decoration:none;font-weight:500;}
+  nav a:hover{text-decoration:underline;}
+  .container{max-width:900px;margin:20px auto;padding:20px;background:#fff;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.05);}
+  form{display:grid;gap:12px;}
+  input,select{padding:10px;border-radius:8px;border:1px solid #ccc;}
+  button{padding:10px 20px;background:#004aad;color:#fff;border:none;border-radius:8px;cursor:pointer;}
+  button:hover{background:#0066ff;}
+  footer{text-align:center;margin-top:30px;color:#777;}
+</style>
+</head>
+<body>
+<header>
+  <h1>KDMP Simpan Pinjam Desa Sidorejo</h1>
+  <nav>
+    <a href="#" onclick="logout()">Logout</a>
+    <a href="admin.html">Admin Panel</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>Pendaftaran Anggota Baru</h2>
+  <form id="joinForm">
+    <input type="text" placeholder="Nama Lengkap" id="nama" required>
+    <input type="text" placeholder="Nomor HP" id="hp" required>
+    <input type="text" placeholder="Alamat" id="alamat" required>
+    <input type="text" placeholder="Pekerjaan" id="pekerjaan">
+    <select id="simpanan">
+      <option>Simpanan Pokok</option>
+      <option>Simpanan Wajib</option>
+      <option>Simpanan Sukarela</option>
+    </select>
+    <button type="submit">Kirim</button>
+    <p id="formMsg"></p>
+  </form>
+</div>
+
+<div class="container">
+  <h2>Grafik Keuangan (Kosong)</h2>
+  <canvas id="chart"></canvas>
+</div>
+
+<footer>
+  <p>© 2025 KDMP Sidorejo</p>
+</footer>
+
+<script>
+  if(localStorage.getItem('isLoggedIn')!=='true'){
+    window.location.href='login.html';
+  }
+
+  document.getElementById('joinForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    const data=JSON.parse(localStorage.getItem('pendaftaran')||'[]');
+    data.push({
+      nama:document.getElementById('nama').value,
+      hp:document.getElementById('hp').value,
+      alamat:document.getElementById('alamat').value,
+      pekerjaan:document.getElementById('pekerjaan').value,
+      simpanan:document.getElementById('simpanan').value,
+      tanggal:new Date().toLocaleString('id-ID')
+    });
+    localStorage.setItem('pendaftaran',JSON.stringify(data));
+    document.getElementById('formMsg').textContent='✅ Data berhasil disimpan!';
+    this.reset();
+  });
+
+  function logout(){
+    localStorage.removeItem('isLoggedIn');
+    window.location.href='login.html';
+  }
+
+  const ctx=document.getElementById('chart');
+  new Chart(ctx,{type:'bar',data:{labels:['2021','2022','2023','2024','2025'],datasets:[{label:'Total Simpanan',data:[],backgroundColor:'rgba(0,74,173,0.6)'}]},options:{scales:{y:{beginAtZero:true}}}});
+</script>
+</body>
+</html>
